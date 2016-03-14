@@ -2,10 +2,10 @@
 set -e
 
 # Battery icons
-tmux set -g @batt_charged_icon "︎♡"
-tmux set -g @batt_charging_icon "︎♡"
-tmux set -g @batt_discharging_icon "︎♡"
-tmux set -g @batt_attached_icon "︎♡"
+tmux set -g @batt_charged_icon "A"
+tmux set -g @batt_charging_icon "B"
+tmux set -g @batt_discharging_icon "C"
+tmux set -g @batt_attached_icon "D"
 
 
 # BEGIN Fix CPU segment --------------------------------------------------------
@@ -14,36 +14,36 @@ tmux set -g @batt_attached_icon "︎♡"
 # window name. This script adds the blank space back to the `status-left`.
 # Issue #2: https://github.com/caiogondim/maglev/issues/2
 
-get_tmux_option() {
-    local option
-    local default_value
-    local option_value
-
-    option="$1"
-    default_value="$2"
-    option_value="$(tmux show-option -gqv "$option")"
-
-    if [ -z "$option_value" ]; then
-        echo "$default_value"
-    else
-        echo "$option_value"
-    fi
-}
-
-set_tmux_option() {
-    local option=$1
-    local value=$2
-
-    tmux set-option -gq "$option" "$value"
-}
-
-main() {
-    local status_left
-
-    status_left=$(get_tmux_option "status-left")
-    set_tmux_option "status-left" "$status_left "
-}
-main
+# get_tmux_option() {
+#     local option
+#     local default_value
+#     local option_value
+# 
+#     option="$1"
+#     default_value="$2"
+#     option_value="$(tmux show-option -gqv "$option")"
+# 
+#     if [ -z "$option_value" ]; then
+#         echo "$default_value"
+#     else
+#         echo "$option_value"
+#     fi
+# }
+# 
+# set_tmux_option() {
+#     local option=$1
+#     local value=$2
+# 
+#     tmux set-option -gq "$option" "$value"
+# }
+# 
+# main() {
+#     local status_left
+# 
+#     status_left=$(get_tmux_option "status-left")
+#     set_tmux_option "status-left" "$status_left "
+# }
+# main
 
 # END Fix CPU segment ----------------------------------------------------------
 
@@ -56,53 +56,53 @@ apply_theme() {
     session_symbol=''
 
     # panes
-    pane_border_fg=colour8 # gray
-    pane_active_border_fg=colour4 # blue
+    pane_border_fg=colour8
+    pane_active_border_fg=colour4
 
     tmux set -g pane-border-style fg=$pane_border_fg \; set -g pane-active-border-style fg=$pane_active_border_fg
     #uncomment for fat borders
-    #tmux set -ga pane-border-style bg=$pane_border_fg \; set -ga pane-active-border-style bg=$pane_active_border_fg
+    tmux set -ga pane-border-style bg=$pane_border_fg \; set -ga pane-active-border-style bg=$pane_active_border_fg
 
-    display_panes_active_colour=colour4 # blue
-    display_panes_colour=colour4 # blue
+    display_panes_active_colour=colour4
+    display_panes_colour=colour4
     tmux set -g display-panes-active-colour $display_panes_active_colour \; set -g display-panes-colour $display_panes_colour
 
     # messages
-    message_fg=colour16           # black
-    message_bg=colour11 # yellow
+    message_fg=colour16
+    message_bg=colour226
     message_attr=bold
     tmux set -g message-style fg=$message_fg,bg=$message_bg,$message_attr
 
-    message_command_fg=colour16   # black
-    message_command_bg=colour160  # light yellow
+    message_command_fg=colour16
+    message_command_bg=colour229
     tmux set -g message-command-style fg=$message_command_fg,bg=$message_command_bg,$message_attr
 
     # windows mode
-    mode_fg=colour16   # black
-    mode_bg=colour11 # yellow
+    mode_fg=colour16
+    mode_bg=colour226
     mode_attr=bold
     tmux setw -g mode-style fg=$mode_fg,bg=$mode_bg,$mode_attr
 
     # status line
-    status_fg=colour253 # white
-    status_bg=colour0 # dark gray
+    status_fg=colour255
+    status_bg=colour236
     tmux set -g status-style fg=$status_fg,bg=$status_bg
 
-    session_fg=colour16  # black
-    session_bg=colour11 # yellow
+    session_fg=colour16
+    session_bg=colour226
     status_left="#[fg=$session_fg,bg=$session_bg,bold] ❐ #S #[fg=$session_bg,bg=$status_bg,nobold]$left_separator_black"
     if [ x"`tmux -q -L tmux_theme_status_left_test -f /dev/null new-session -d \; show -g -v status-left \; kill-session`" = x"[#S] " ] ; then
         status_left="$status_left "
     fi
     tmux set -g status-left-length 32 \; set -g status-left "$status_left"
 
-    window_status_fg=colour8 # gray
-    window_status_bg=colour0 # dark gray
+    window_status_fg=colour8
+    window_status_bg=colour236
     window_status_format="#I #W"
     tmux setw -g window-status-style fg=$window_status_fg,bg=$window_status_bg \; setw -g window-status-format "$window_status_format"
 
-    window_status_current_fg=colour16 # black
-    window_status_current_bg=colour4 # blue
+    window_status_current_fg=colour16
+    window_status_current_bg=colour4
     window_status_current_format="#[fg=$window_status_bg,bg=$window_status_current_bg]$left_separator_black#[fg=$window_status_current_fg,bg=$window_status_current_bg,bold] #I $left_separator #W #[fg=$window_status_current_bg,bg=$status_bg,nobold]$left_separator_black"
     tmux setw -g window-status-current-format "$window_status_current_format"
     tmux set -g status-justify left
@@ -112,29 +112,29 @@ apply_theme() {
     window_status_activity_attr=underscore
     tmux setw -g window-status-activity-style fg=$window_status_activity_fg,bg=$window_status_activity_bg,$window_status_activity_attr
 
-    window_status_bell_fg=colour11 # yellow
+    window_status_bell_fg=colour226
     window_status_bell_bg=default
     window_status_bell_attr=blink,bold
     tmux setw -g window-status-bell-style fg=$window_status_bell_fg,bg=$window_status_bell_bg,$window_status_bell_attr
 
-    window_status_last_fg=colour4 # blue
+    window_status_last_fg=colour4
     window_status_last_attr=default
     tmux setw -g window-status-last-style $window_status_last_attr,fg=$window_status_last_fg
 
-    battery_full_fg=colour160   # red
-    battery_empty_fg=colour254  # white
-    battery_bg=colour160        # black
-    time_date_fg=colour8      # gray
-    time_date_bg=colour0 # dark gray
-    whoami_fg=colour254         # white
-    whoami_bg=colour160         # red
-    host_fg=colour16            # black
-    host_bg=colour254           # white
-    status_right="︎#[fg=$time_date_fg,nobold]$right_separator %R $right_separator %a %d %b #[fg=$host_bg]$right_separator_black#[fg=$host_fg,bg=$host_bg,bold] #{battery_icon} #{battery_percentage} $right_separator CPU #{cpu_percentage} "
-    tmux set -g status-right-length 64 \; set -g status-right "$status_right"
+    battery_full_fg=colour160
+    battery_empty_fg=colour255
+    battery_bg=colour16
+    time_date_fg=colour245
+    time_date_bg=colour236
+    whoami_fg=colour255
+    whoami_bg=colour160
+    host_fg=colour16
+    host_bg=colour255
+    status_right="#[fg=red,dim]#(uptime| cut -f4-5 -d\" \" | cut -f1 -d \",\") #[fg=$time_date_fg,nobold]$right_separator %R $right_separator %d-%m-%y #[fg=$host_bg]$right_separator_black#[fg=$host_fg,bg=$host_bg,bold] #(tmux-mem-cpu-load) "
+    tmux set -g status-right-length 100 \; set -g status-right "$status_right"
 
     # clock
-    clock_mode_colour=colour4 # blue
+    clock_mode_colour=colour4
     tmux setw -g clock-mode-colour $clock_mode_colour
 }
 
@@ -238,7 +238,7 @@ battery() {
         battery_bg=${battery_bg:-colour16}
         heat="233 234 235 237 239 241 243 245 247 144 143 142 184 214 208 202 196"
         heat_count=$(echo $(echo $heat | wc -w))
-
+ 
         eval set -- "$heat"
         heat=$(eval echo $(eval echo $(printf "\\$\{\$(expr %s \* $heat_count / $battery_symbol_count)\} " $(seq 1 $battery_symbol_count))))
 
@@ -258,4 +258,5 @@ battery() {
     fi
 }
 
+battery
 apply_theme
